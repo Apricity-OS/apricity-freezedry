@@ -1,6 +1,6 @@
 import collections
 
-import json
+import toml
 
 import os
 
@@ -23,7 +23,7 @@ def update_recursively(parent_dict, child_dict):
 
 def build_inheritance(current_fnm):
     with open(current_fnm) as f:
-        current_dict = json.loads(f.read())
+        current_dict = toml.loads(f.read())
     if 'inherits' in current_dict.keys():
         config_dir = os.path.dirname(current_fnm)
         inherits_fnm = os.path.join(config_dir, current_dict['inherits'])
@@ -58,7 +58,7 @@ def load_config(config_fnm):
 
 
 def get_config_fnm():
-    return 'apricity.json'
+    return 'apricity.toml'
 
 
 if __name__ == '__main__':
