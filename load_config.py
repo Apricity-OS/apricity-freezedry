@@ -1,6 +1,6 @@
 import collections
 
-import json
+import toml
 
 import os
 
@@ -23,7 +23,7 @@ def update_recursively(parent_dict, child_dict):
 
 def build_inheritance(current_fnm):
     with open(current_fnm) as f:
-        current_dict = json.loads(f.read())
+        current_dict = toml.loads(f.read())
     if 'inherits' in current_dict.keys():
         config_dir = os.path.dirname(current_fnm)
         inherits_fnm = os.path.join(config_dir, current_dict['inherits'])
@@ -47,13 +47,15 @@ def init_modules(conf_dict):
     return modules
 
 
-def load_config(config_fnm):
+def load_config(config_fnm, mode=['user', 'root']):
     conf_dict = get_conf_dict(config_fnm)
     modules = init_modules(conf_dict)
     module_pool = ModulePool(modules)
     logger = Logger()
-    module_pool.do_root_setup(logger)
-    module_pool.do_user_setup(logger)
+    if 'root' in mode:
+        module_pool.do_root_setup(logger)
+    if 'user' in mode:
+        module_pool.do_user_setup(logger)
     logger.display_errors()
 
 

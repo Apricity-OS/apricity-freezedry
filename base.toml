@@ -1,0 +1,65 @@
+# [pacman]
+#     [pacman.packages]
+#     apricity = [
+#         "tar"
+#     ]
+#     base = [
+#         "git"
+#     ]
+
+# [systemd]
+#     [systemd.services]
+#     apricity = [
+#         "org.cups.cupsd",
+#         "smbd",
+#         "nmbd",
+#         "graphical.target",
+#         "gdm"
+#     ]
+
+[gnome]
+gtk_theme = "Arctic Apricity"
+shell_theme = "Arctic Apricity"
+icon_theme = "Apricity Icons"
+wallpaper = "file:///usr/share/backgrounds/gnome/tahoe.jpg"
+lock_background = "file:///usr/share/backgrounds/gnome/bliss.jpg"
+gtk_button_layout = ":minimize,maximize,close"
+dynamic_workspaces = false
+desktop_icons = true
+    [gnome.nautilus]
+    default_zoom = 'small'
+    [gnome.extensions]
+    apricity = [
+        "user-theme@gnome-shell-extensions.gcampax.github.com",
+        "alwayszoomworkspaces@jamie.thenicols.net",
+        "mediaplayer@patapon.info",
+        "caffeine@patapon.info",
+        "scroll-workspaces@gfxmonk.net",
+        "dash-to-dock@micxgx.gmail.com",
+        "suspend-button@laserb",
+        "topIcons@adel.gadllah@gmail.com",
+        "places-menu@gnome-shell-extensions.gcampax.github.com",
+        "drive-menu@gnome-shell-extensions.gcampax.github.com",
+        "remove-dropdown-arrows@mpdeimos.com",
+        "Move_Clock@rmy.pobox.com"
+    ]
+    [gnome.favorite_apps]
+    apricity = [
+        'google-chrome.desktop',
+        'ice.desktop',
+        'org.gnome.Nautilus.desktop',
+        'geary.desktop',
+        'empathy.desktop',
+        'gnome-music.desktop',
+        'org.gnome.Photos.desktop',
+        'org.gnome.Totem.desktop',
+        'libreoffice-writer.desktop',
+        'libreoffice-impress.desktop',
+        'libreoffice-calc.desktop',
+        'org.gnome.gedit.desktop',
+        'gnome-terminal.desktop',
+        'gnome-tweak-tool.desktop',
+        'gnome-control-center.desktop',
+        'pamac-manager.desktop',
+        'cnchi.desktop'
+    ]

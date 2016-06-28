@@ -15,26 +15,30 @@ class VimModule(Module):
         self.dep_options = ['vim', 'gvim']
         self.plugin_manager = config['plugin_manager']
         self.plugin_repos = self.gen_list_from_dicts(config['plugins'])
+        self.vimrc = self.gen_list_from_dicts(config['vimrc'])
         self.check_plugin_manager()
-        self.vimrc = []
 
     def check_plugin_manager(self):
         if self.plugin_manager == 'pathogen':
-            pass
+            self.vimrc.insert(0, 'execute pathogen#infect()')
         else:
             raise Exception('Invalid plugin manager `%s`' %
                             self.plugin_manager)
 
-    def install_root_pathogen(self, logger):
+    def install_root_pathogen_at(self, base_dir, logger):
         subprocess.check_call(['sudo', 'mkdir', '-p',
-                               '/etc/skel/.vim/autoload',
-                               '/etc/skel/.vim/bundle'])
+                               os.path.join(base_dir, '.vim/autoload'),
+                               os.path.join(base_dir, '.vim/bundle')])
         subprocess.check_call(['sudo', 'wget',
-                               '-O', '/etc/skel/.vim/autoload/pathogen.vim',
+                               '-O', os.path.join(
+                                   base_dir, '.vim/autoload/pathogen.vim'),
                                ('https://raw.githubusercontent.com/'
                                 'tpope/vim-pathogen/master/autoload/'
                                 'pathogen.vim')])
-        self.vimrc.append('execute pathogen#infect()')
+
+    def install_root_pathogen(self, logger):
+        self.install_root_pathogen_at('/etc/skel', logger)
+        self.install_root_pathogen_at('/root', logger)
 
     def install_user_pathogen(self, logger):
         print('-' * 50)
@@ -47,7 +51,6 @@ class VimModule(Module):
                                ('https://raw.githubusercontent.com/'
                                 'tpope/vim-pathogen/master/autoload/'
                                 'pathogen.vim')])
-        self.vimrc.append('execute pathogen#infect()')
 
     def install_plugin_manager(self, mode, logger):
         if self.plugin_manager == 'pathogen':
@@ -76,8 +79,8 @@ class VimModule(Module):
             return True
         return False
 
-    def install_root_pathogen_plugin(self, plugin_repo, logger):
-        with cd('/etc/skel/.vim/bundle'):
+    def install_root_pathogen_plugin_at(self, base_dir, plugin_repo, logger):
+        with cd(base_dir):
             plugin_name = self.plugin_name_from_repo(plugin_repo)
             print(plugin_name)
             assert self.is_safe(plugin_name)
@@ -90,6 +93,10 @@ class VimModule(Module):
                                        plugin_name])
             subprocess.check_call(['sudo', 'git', 'clone',
                                    plugin_repo])
+
+    def install_root_pathogen_plugin(self, plugin_repo, logger):
+        self.install_root_pathogen_plugin_at('/etc/skel', plugin_repo, logger)
+        self.install_root_pathogen_plugin_at('/root', plugin_repo, logger)
 
     def install_user_pathogen_plugin(self, plugin_repo, logger):
         with cd(os.path.expanduser('~/.vim/bundle')):
@@ -118,6 +125,35 @@ class VimModule(Module):
                               (plugin_repo, mode))
                 logger.log_error(ApplyError(error_text))
 
+    def install_root_vimrc_at(self, base_dir, vimrc, logger):
+        tmp_fnm = '/tmp/.vimrc_temp'
+        with open(tmp_fnm, 'w') as f:
+            f.write(vimrc)
+        try:
+            subprocess.check_call([
+                'sudo', 'cp', '-f',
+                tmp_fnm,
+                os.path.join(base_dir, '.vimrc')])
+        except Exception as e:
+            print(e)
+            error_text = 'Failed to install vimrc at %s' % base_dir
+            logger.log_error(ApplyError(error_text))
+
+    def install_root_vimrc(self, logger):
+        vimrc = '\n'.join(self.vimrc)
+        self.install_root_vimrc_at('/etc/skel', vimrc, logger)
+        self.install_root_vimrc_at('/root', vimrc, logger)
+
+    def install_user_vimrc(self, logger):
+        vimrc = '\n'.join(self.vimrc)
+        try:
+            with open(os.path.expanduser('~/.vimrc'), 'w') as f:
+                f.write(vimrc)
+        except Exception as e:
+            print(e)
+            error_text = 'Failed to install user vimrc'
+            logger.log_error(ApplyError(error_text))
+
     def do_root_setup(self, module_pool, logger):
         module_pool.broadcast('package_manager',
                               'install_dependency',
@@ -126,8 +162,10 @@ class VimModule(Module):
         self.install_plugin_manager('root', logger)
         for plugin_repo in self.plugin_repos:
             self.install_plugin(plugin_repo, 'root', logger)
+        self.install_root_vimrc(logger)
 
     def do_user_setup(self, module_pool, logger):
         self.install_plugin_manager('user', logger)
         for plugin_repo in self.plugin_repos:
             self.install_plugin(plugin_repo, 'user', logger)
+        self.install_user_vimrc(logger)
