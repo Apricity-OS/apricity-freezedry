@@ -60,7 +60,7 @@ def load_config(config_fnm, mode=['user', 'root']):
 
 
 def get_config_fnm():
-    return 'apricity.json'
+    return 'apricity.toml'
 
 
 if __name__ == '__main__':
