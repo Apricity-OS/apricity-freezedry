@@ -1,2 +1,2 @@
 #!/bin/bash
-python /etc/apricity_freezedry.py "$@"
+python /etc/freezedry/run.py "$@"

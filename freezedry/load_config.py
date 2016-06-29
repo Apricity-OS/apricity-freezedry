@@ -4,8 +4,8 @@ import toml
 
 import os
 
-from modules import all_modules, reserved_words
-from modules import ModulePool
+from freezedry.modules import all_modules, reserved_words
+from freezedry.modules import ModulePool
 
 from logger import Logger
 

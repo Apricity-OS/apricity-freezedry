@@ -1,6 +1,6 @@
 import argparse
 
-from load_config import load_config
+from freezedry.load_config import load_config
 
 
 def get_parser():

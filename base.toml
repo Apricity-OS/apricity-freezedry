@@ -1,21 +1,21 @@
-# [pacman]
-#     [pacman.packages]
-#     apricity = [
-#         "tar"
-#     ]
-#     base = [
-#         "git"
-#     ]
+[pacman]
+    [pacman.packages]
+    apricity = [
+        "tar"
+    ]
+    base = [
+        "git"
+    ]
 
-# [systemd]
-#     [systemd.services]
-#     apricity = [
-#         "org.cups.cupsd",
-#         "smbd",
-#         "nmbd",
-#         "graphical.target",
-#         "gdm"
-#     ]
+[systemd]
+    [systemd.services]
+    apricity = [
+        "org.cups.cupsd",
+        "smbd",
+        "nmbd",
+        "graphical.target",
+        "gdm"
+    ]
 
 [gnome]
 gtk_theme = "Arctic Apricity"
