@@ -4,8 +4,8 @@ import os
 
 import re
 
-from error import ApplyError, ApplyWarning
-from lib import cd
+from freezedry.error import ApplyError, ApplyWarning
+from freezedry.lib import cd
 from .core import Module
 
 

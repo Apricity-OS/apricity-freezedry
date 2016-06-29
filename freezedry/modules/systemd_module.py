@@ -1,6 +1,6 @@
 import subprocess
 
-from error import ApplyError
+from freezedry.error import ApplyError
 from .core import Module
 
 

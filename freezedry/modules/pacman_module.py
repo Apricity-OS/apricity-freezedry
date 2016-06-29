@@ -1,7 +1,7 @@
 import subprocess
 
-from error import ApplyError
-from lib import any_in
+from freezedry.error import ApplyError
+from freezedry.lib import any_in
 from .core import Module
 
 
