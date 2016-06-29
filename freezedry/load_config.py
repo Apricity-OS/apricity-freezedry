@@ -7,7 +7,7 @@ import os
 from freezedry.modules import all_modules, reserved_words
 from freezedry.modules import ModulePool
 
-from logger import Logger
+from freezedry.logger import Logger
 
 
 def update_recursively(parent_dict, child_dict):
