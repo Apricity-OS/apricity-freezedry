@@ -1,2 +1,2 @@
 #!/bin/bash
-python /etc/freezedry/run.py "$@"
+python -m freezedry.run "$@"

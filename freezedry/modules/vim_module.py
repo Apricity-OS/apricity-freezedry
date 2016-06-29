@@ -85,9 +85,9 @@ class VimModule(Module):
             print(plugin_name)
             assert self.is_safe(plugin_name)
             if os.path.isdir(plugin_name):
-                warn_text = ('Vim plugin `%s` already installed for root, '
+                warn_text = ('Vim plugin `%s` already installed at %s, '
                              'reinstalling' %
-                             plugin_name)
+                             (plugin_name, base_dir))
                 logger.log_error(ApplyWarning(warn_text))
                 subprocess.check_call(['sudo', 'rm', '-rf',
                                        plugin_name])
