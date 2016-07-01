@@ -2,6 +2,9 @@ inherits = "base.toml"
 
 [gdm]
 
+[pacman]
+keyrings = ['archlinux', 'apricity']
+
 # [pacman]
 # [pacman.packages]
 #     apricity = [

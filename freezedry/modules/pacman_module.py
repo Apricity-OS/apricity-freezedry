@@ -10,6 +10,7 @@ class PacmanModule(Module):
         Module.__init__(self, config, **kwargs)
         self.roles = ['package_manager']
         self.packages = self.gen_list_from_dicts(config['packages'])
+        self.keyrings = config['keyrings']
 
     def get_installed_packages(self, logger):
         try:
@@ -43,5 +44,16 @@ class PacmanModule(Module):
         for package in packages:
             self.install_package(package, logger)
 
+    def setup_pacman(self, logger):
+        for keyring in self.keyrings:
+            for attempt in range(4):
+                subprocess.call(
+                    ['sudo', 'pacman-key', '--init', keyring])
+                subprocess.call(
+                    ['sudo', 'pacman-key', '--populate', keyring])
+        subprocess.call(
+            ['sudo', 'pacman', '-Syy'])
+
     def do_root_setup(self, module_pool, logger, livecd=False):
+        self.setup_pacman(logger)
         self.install_packages(self.packages, logger)
