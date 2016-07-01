@@ -1,11 +1,11 @@
-[pacman]
-    [pacman.packages]
-    apricity = [
-        "tar"
-    ]
-    base = [
-        "git"
-    ]
+# [pacman]
+#     [pacman.packages]
+#     apricity = [
+#         "tar"
+#     ]
+#     base = [
+#         "git"
+#     ]
 
 [systemd]
     [systemd.services]

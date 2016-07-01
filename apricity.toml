@@ -2,8 +2,25 @@ inherits = "base.toml"
 
 [gdm]
 
-[pacman]
-keyrings = ['archlinux', 'apricity']
+# [pacman]
+# keyrings = ['archlinux', 'apricity']
+
+[zsh]
+[zsh.zshrc]
+apricity = [
+    '''source /usr/share/zsh/site-contrib/powerline.zsh''',
+    '''zstyle ':completion:*' menu select''',
+    # '''case $TERM in''',
+    # "    xterm*) ",
+    # "    bindkey \"^[[H\" beginning-of-line # Home (xterm)",
+    # '''    bindkey '^[[F' end-of-line # End (xterm)''',
+    # '''    bindkey '\e[3~' delete-char  # Delete''',
+    # '''    bindkey '^[[5~'  history-beginning-search-backward # Page Up''',
+    # '''    bindkey '^[[6~'  history-beginning-search-forward # Page Down''',
+    # '''    bindkey '^[[2~' overwrite-mode # Insert''',
+    # ''';;''',
+    # '''esac''',
+]
 
 # [pacman]
 # [pacman.packages]
