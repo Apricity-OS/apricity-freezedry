@@ -43,5 +43,5 @@ class PacmanModule(Module):
         for package in packages:
             self.install_package(package, logger)
 
-    def do_root_setup(self, module_pool, logger):
+    def do_root_setup(self, module_pool, logger, livecd=False):
         self.install_packages(self.packages, logger)

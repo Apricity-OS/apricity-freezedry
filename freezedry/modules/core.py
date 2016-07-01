@@ -10,10 +10,10 @@ class Module(object):
             items += current_list
         return items
 
-    def do_root_setup(self, module_pool, logger):
+    def do_root_setup(self, module_pool, logger, livecd=False):
         pass
 
-    def do_user_setup(self, module_pool, logger):
+    def do_user_setup(self, module_pool, logger, livecd=False):
         pass
 
     def __repr__(self):
@@ -28,13 +28,13 @@ class ModulePool(object):
     def __repr__(self):
         return str(self.modules)
 
-    def do_root_setup(self, logger):
+    def do_root_setup(self, logger, livecd=False):
         for module in self.modules:
-            module.do_root_setup(self, logger)
+            module.do_root_setup(self, logger, livecd)
 
-    def do_user_setup(self, logger):
+    def do_user_setup(self, logger, livecd=False):
         for module in self.modules:
-            module.do_user_setup(self, logger)
+            module.do_user_setup(self, logger, livecd)
 
     def broadcast(self, role, action, *args, **kwargs):
         for module in self.modules:

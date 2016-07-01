@@ -47,15 +47,15 @@ def init_modules(conf_dict):
     return modules
 
 
-def load_config(config_fnm, mode=['user', 'root']):
+def load_config(config_fnm, mode=['user', 'root'], livecd=False):
     conf_dict = get_conf_dict(config_fnm)
     modules = init_modules(conf_dict)
     module_pool = ModulePool(modules)
     logger = Logger()
     if 'root' in mode:
-        module_pool.do_root_setup(logger)
+        module_pool.do_root_setup(logger, livecd)
     if 'user' in mode:
-        module_pool.do_user_setup(logger)
+        module_pool.do_user_setup(logger, livecd)
     logger.display_errors()
 
 

@@ -25,12 +25,16 @@ class GnomeModule(Module):
 
     def set_gtk_theme(self, logger):
         try:
-            subprocess.check_call([
+            cmd = [
                 'gsettings', 'set', 'org.gnome.desktop.interface',
-                'gtk-theme', '"%s"' % self.gtk_theme])
-            subprocess.check_call([
+                'gtk-theme', '"%s"' % self.gtk_theme]
+            subprocess.check_call(cmd)
+            self.cmds.append(cmd)
+            cmd = [
                 'gsettings', 'set', 'org.gnome.desktop.wm.preferences',
-                'theme', '"%s"' % self.gtk_theme])
+                'theme', '"%s"' % self.gtk_theme]
+            subprocess.check_call(cmd)
+            self.cmds.append(cmd)
         except Exception as e:
             print(e)
             error_text = 'Failed to enable gtk theme %s' % self.gtk_theme
@@ -38,9 +42,11 @@ class GnomeModule(Module):
 
     def set_shell_theme(self, logger):
         try:
-            subprocess.check_call([
+            cmd = [
                 'gsettings', 'set', 'org.gnome.shell.extensions.user-theme',
-                'name', '"%s"' % self.shell_theme])
+                'name', '"%s"' % self.shell_theme]
+            subprocess.check_call(cmd)
+            self.cmds.append(cmd)
         except Exception as e:
             print(e)
             error_text = 'Failed to enable shell theme %s' % self.shell_theme
@@ -48,9 +54,11 @@ class GnomeModule(Module):
 
     def set_icon_theme(self, logger):
         try:
-            subprocess.check_call([
+            cmd = [
                 'gsettings', 'set', 'org.gnome.desktop.interface',
-                'icon-theme', '"%s"' % self.icon_theme])
+                'icon-theme', '"%s"' % self.icon_theme]
+            subprocess.check_call(cmd)
+            self.cmds.append(cmd)
         except Exception as e:
             print(e)
             error_text = 'Failed to enable icon theme %s' % self.icon_theme
@@ -58,9 +66,11 @@ class GnomeModule(Module):
 
     def enable_extensions(self, logger):
         try:
-            subprocess.check_call([
+            cmd = [
                 'gsettings', 'set', 'org.gnome.shell',
-                'enabled-extensions', '%s' % str(self.extensions)])
+                'enabled-extensions', '%s' % str(self.extensions)]
+            subprocess.check_call(cmd)
+            self.cmds.append(cmd)
         except Exception as e:
             print(e)
             error_text = 'Failed to enable gnome shell extensions'
@@ -68,9 +78,11 @@ class GnomeModule(Module):
 
     def set_favorite_apps(self, logger):
         try:
-            subprocess.check_call([
+            cmd = [
                 'gsettings', 'set', 'org.gnome.shell',
-                'favorite-apps', '%s' % str(self.favorite_apps)])
+                'favorite-apps', '%s' % str(self.favorite_apps)]
+            subprocess.check_call(cmd)
+            self.cmds.append(cmd)
         except Exception as e:
             print(e)
             error_text = 'Failed to set favorite apps'
@@ -78,9 +90,11 @@ class GnomeModule(Module):
 
     def set_wallpaper(self, logger):
         try:
-            subprocess.check_call([
+            cmd = [
                 'gsettings', 'set', 'org.gnome.desktop.background',
-                'picture-uri', '"%s"' % self.wallpaper_fnm])
+                'picture-uri', '"%s"' % self.wallpaper_fnm]
+            subprocess.check_call(cmd)
+            self.cmds.append(cmd)
         except Exception as e:
             print(e)
             error_text = 'Failed to set wallpaper %s' % self.wallpaper_fnm
@@ -88,9 +102,11 @@ class GnomeModule(Module):
 
     def set_lock_back(self, logger):
         try:
-            subprocess.check_call([
+            cmd = [
                 'gsettings', 'set', 'org.gnome.desktop.screensaver',
-                'picture-uri', '"%s"' % self.lock_back_fnm])
+                'picture-uri', '"%s"' % self.lock_back_fnm]
+            subprocess.check_call(cmd)
+            self.cmds.append(cmd)
         except Exception as e:
             print(e)
             error_text = 'Failed to set lock screen background %s' % \
@@ -99,29 +115,47 @@ class GnomeModule(Module):
 
     def set_misc_gnome(self, logger):
         try:
-            subprocess.check_call([
+            cmd = [
                 'gsettings', 'set', 'org.gnome.nautilus.icon-view',
-                'default-zoom-level', '"%s"' % self.nautilus_zoom])
-            subprocess.check_call([
+                'default-zoom-level', '"%s"' % self.nautilus_zoom]
+            subprocess.check_call(cmd)
+            self.cmds.append(cmd)
+            cmd = [
                 'gsettings', 'set', 'org.gnome.desktop.wm.preferences',
-                'button-layout', '"%s"' % self.button_layout])
-            subprocess.check_call([
+                'button-layout', '"%s"' % self.button_layout]
+            subprocess.check_call(cmd)
+            self.cmds.append(cmd)
+            cmd = [
                 'gsettings', 'set',
                 'org.gnome.settings-daemon.plugins.xsettings',
                 'overrides', '{\'Gtk/DecorationLayout\': <\'%s\'>}' %
-                self.button_layout])
-            subprocess.check_call([
+                self.button_layout]
+            subprocess.check_call(cmd)
+            self.cmds.append(cmd)
+            cmd = [
                 'gsettings', 'set', 'org.gnome.shell.overrides',
-                'dynamic-workspaces', str(self.dynamic_workspaces).lower()])
-            subprocess.check_call([
+                'dynamic-workspaces', str(self.dynamic_workspaces).lower()]
+            subprocess.check_call(cmd)
+            self.cmds.append(cmd)
+            cmd = [
                 'gsettings', 'set', 'org.gnome.desktop.background',
-                'show-desktop-icons', str(self.desktop_icons).lower()])
+                'show-desktop-icons', str(self.desktop_icons).lower()]
+            subprocess.check_call(cmd)
+            self.cmds.append(cmd)
         except Exception as e:
             print(e)
             error_text = 'Failed to set misc gnome settings'
             logger.log_error(ApplyError(error_text))
 
-    def do_user_setup(self, module_pool, logger):
+    def set_xsettings(self, module_pool, logger):
+        xsettings = '\n'.join(' '.join(cmd) for cmd in self.cmds)
+        module_pool.broadcast('display_manager',
+                              'append_xsettings',
+                              xsettings,
+                              logger)
+
+    def do_user_setup(self, module_pool, logger, livecd=False):
+        self.cmds = []
         self.set_gtk_theme(logger)
         self.set_shell_theme(logger)
         self.set_icon_theme(logger)
@@ -130,3 +164,4 @@ class GnomeModule(Module):
         self.set_wallpaper(logger)
         self.set_lock_back(logger)
         self.set_misc_gnome(logger)
+        self.set_xsettings(module_pool, logger)

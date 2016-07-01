@@ -154,7 +154,7 @@ class VimModule(Module):
             error_text = 'Failed to install user vimrc'
             logger.log_error(ApplyError(error_text))
 
-    def do_root_setup(self, module_pool, logger):
+    def do_root_setup(self, module_pool, logger, livecd=False):
         module_pool.broadcast('package_manager',
                               'install_dependency',
                               self.dep_options,
@@ -164,7 +164,7 @@ class VimModule(Module):
             self.install_plugin(plugin_repo, 'root', logger)
         self.install_root_vimrc(logger)
 
-    def do_user_setup(self, module_pool, logger):
+    def do_user_setup(self, module_pool, logger, livecd=False):
         self.install_plugin_manager('user', logger)
         for plugin_repo in self.plugin_repos:
             self.install_plugin(plugin_repo, 'user', logger)

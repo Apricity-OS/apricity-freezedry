@@ -10,7 +10,7 @@ class SystemdModule(Module):
         self.roles = ['service_manager']
         self.services = self.gen_list_from_dicts(config['services'])
 
-    def do_root_setup(self, module_pool, logger):
+    def do_root_setup(self, module_pool, logger, livecd=False):
         for service in self.services:
             command = ['/usr/bin/sudo', 'systemctl', 'enable', service]
             try:

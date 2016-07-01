@@ -9,6 +9,7 @@ def get_parser():
                         help='file name to load')
     parser.add_argument('--user', action='store_true')
     parser.add_argument('--root', action='store_true')
+    parser.add_argument('--livecd', action='store_true')
     return parser
 
 
@@ -23,7 +24,8 @@ def main():
             mode.append(['root'])
         if len(mode) == 0:
             mode = ['user', 'root']
-        load_config(args.fnm, mode)
+        load_config(args.fnm, mode,
+                    livecd=args.livecd)
     else:
         raise Exception('Please enter a valid mode')
 
