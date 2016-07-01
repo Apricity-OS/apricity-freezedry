@@ -70,7 +70,10 @@ class GnomeModule(Module):
                 'gsettings', 'set', 'org.gnome.shell',
                 'enabled-extensions', '%s' % str(self.extensions)]
             subprocess.check_call(cmd)
-            self.cmds.append(cmd)
+            xcmd = [
+                'gsettings', 'set', 'org.gnome.shell',
+                'enabled-extensions', '"%s"' % str(self.extensions)]
+            self.cmds.append(xcmd)
         except Exception as e:
             print(e)
             error_text = 'Failed to enable gnome shell extensions'
@@ -82,7 +85,10 @@ class GnomeModule(Module):
                 'gsettings', 'set', 'org.gnome.shell',
                 'favorite-apps', '%s' % str(self.favorite_apps)]
             subprocess.check_call(cmd)
-            self.cmds.append(cmd)
+            xcmd = [
+                'gsettings', 'set', 'org.gnome.shell',
+                'favorite-apps', '"%s"' % str(self.favorite_apps)]
+            self.cmds.append(xcmd)
         except Exception as e:
             print(e)
             error_text = 'Failed to set favorite apps'
