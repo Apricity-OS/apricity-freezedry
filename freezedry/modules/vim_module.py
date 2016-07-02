@@ -80,7 +80,7 @@ class VimModule(Module):
         return False
 
     def install_root_pathogen_plugin_at(self, base_dir, plugin_repo, logger):
-        with cd(base_dir):
+        with cd(os.path.join(base_dir, '.vim/bundle')):
             plugin_name = self.plugin_name_from_repo(plugin_repo)
             print(plugin_name)
             assert self.is_safe(plugin_name)
