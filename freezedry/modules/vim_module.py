@@ -80,7 +80,11 @@ class VimModule(Module):
         return False
 
     def install_root_pathogen_plugin_at(self, base_dir, plugin_repo, logger):
-        with cd(os.path.join(base_dir, '.vim/bundle')):
+        tmp_path = '/tmp/.vim-root/bundle'
+        subprocess.check_call(['rm', '-r', tmp_path])
+        subprocess.check_call(['mkdir', '-p', tmp_path])
+        subprocess.check_call(['cp', '-r', os.path.join(base_dir, '.vim/bundle/*'), tmp_path])
+        with cd(tmp_path):
             plugin_name = self.plugin_name_from_repo(plugin_repo)
             print(plugin_name)
             assert self.is_safe(plugin_name)
@@ -93,6 +97,9 @@ class VimModule(Module):
                                        plugin_name])
             subprocess.check_call(['sudo', 'git', 'clone',
                                    plugin_repo])
+        subprocess.check_call(['sudo', 'cp', '-rf',
+                               os.path.join(tmp_path, '*'),
+                               os.path.join(base_dir, '.vim/bundle')])
 
     def install_root_pathogen_plugin(self, plugin_repo, logger):
         self.install_root_pathogen_plugin_at('/etc/skel', plugin_repo, logger)
