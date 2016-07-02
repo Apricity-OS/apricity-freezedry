@@ -83,7 +83,10 @@ class VimModule(Module):
         tmp_path = '/tmp/.vim-root/bundle'
         subprocess.check_call(['rm', '-rf', tmp_path])
         subprocess.check_call(['mkdir', '-p', tmp_path])
-        subprocess.check_call(['cp', '-rf', os.path.join(base_dir, '.vim/bundle/*'), tmp_path])
+        try:
+            subprocess.check_call(['cp', '-rf', os.path.join(base_dir, '.vim/bundle/*'), tmp_path])
+        except Exception as e:
+            print(e)
         with cd(tmp_path):
             plugin_name = self.plugin_name_from_repo(plugin_repo)
             print(plugin_name)
