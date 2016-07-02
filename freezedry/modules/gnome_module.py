@@ -174,6 +174,19 @@ class GnomeModule(Module):
         with open(os.path.expanduser('~/.config/qt5ct/qt5ct.conf'), 'w') as f:
             f.write(conf)
 
+    def set_root_qt5ct(self, logger):
+        conf = '''[Appearance]
+            color_scheme_path=
+            custom_palette=false
+            style=gtk2'''
+        tmp_fnm = '/tmp/freezedry_root_qt5ct.conf'
+        with open(tmp_fnm, 'w') as f:
+            f.write(conf)
+        subprocess.call(
+            ['sudo', 'mkdir', '-p', '/root/.config/qt5ct'])
+        subprocess.call(
+            ['sudo', 'cp', tmp_fnm, '/root/.config/qt5ct'])
+
     def do_user_setup(self, module_pool, logger, livecd=False):
         self.cmds = []
         self.set_gtk_theme(logger)
@@ -185,4 +198,7 @@ class GnomeModule(Module):
         self.set_lock_back(logger)
         self.set_misc_gnome(logger)
         self.set_xsettings(module_pool, logger)
-        self.set_qt5ct(logger)
+        self.set_user_qt5ct(logger)
+
+    def do_root_setup(self, module_pool, logger, livecd=False):
+        self.set_root_qt5ct(logger)
