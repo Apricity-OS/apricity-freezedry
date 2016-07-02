@@ -83,25 +83,20 @@ class VimModule(Module):
         tmp_path = '/tmp/.vim-root/bundle'
         subprocess.check_call(['sudo', 'rm', '-rf', tmp_path])
         subprocess.check_call(['mkdir', '-p', tmp_path])
-        try:
-            subprocess.check_call(['cp', '-rf', os.path.join(base_dir, '.vim/bundle/*'), tmp_path])
-        except Exception as e:
-            print(e)
         with cd(tmp_path):
             plugin_name = self.plugin_name_from_repo(plugin_repo)
             print(plugin_name)
             assert self.is_safe(plugin_name)
-            if os.path.isdir(plugin_name):
+            if os.path.isdir(
+                    os.path.join(base_dir, '.vim/bundle', plugin_name)):
                 warn_text = ('Vim plugin `%s` already installed at %s, '
                              'reinstalling' %
                              (plugin_name, base_dir))
                 logger.log_error(ApplyWarning(warn_text))
-                subprocess.check_call(['sudo', 'rm', '-rf',
-                                       plugin_name])
             subprocess.check_call(['sudo', 'git', 'clone',
                                    plugin_repo])
         subprocess.check_call(['sudo', 'cp', '-rf',
-                               os.path.join(tmp_path, '*'),
+                               os.path.join(tmp_path, plugin_name),
                                os.path.join(base_dir, '.vim/bundle')])
 
     def install_root_pathogen_plugin(self, plugin_repo, logger):
