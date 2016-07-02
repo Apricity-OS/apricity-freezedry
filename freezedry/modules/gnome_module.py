@@ -185,7 +185,7 @@ class GnomeModule(Module):
         subprocess.call(
             ['sudo', 'mkdir', '-p', '/root/.config/qt5ct'])
         subprocess.call(
-            ['sudo', 'cp', tmp_fnm, '/root/.config/qt5ct'])
+            ['sudo', 'cp', tmp_fnm, '/root/.config/qt5ct/qt5c.conf'])
 
     def do_user_setup(self, module_pool, logger, livecd=False):
         self.cmds = []
