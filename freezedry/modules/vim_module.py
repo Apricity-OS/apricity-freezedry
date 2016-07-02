@@ -81,9 +81,9 @@ class VimModule(Module):
 
     def install_root_pathogen_plugin_at(self, base_dir, plugin_repo, logger):
         tmp_path = '/tmp/.vim-root/bundle'
-        subprocess.check_call(['rm', '-r', tmp_path])
+        subprocess.check_call(['rm', '-rf', tmp_path])
         subprocess.check_call(['mkdir', '-p', tmp_path])
-        subprocess.check_call(['cp', '-r', os.path.join(base_dir, '.vim/bundle/*'), tmp_path])
+        subprocess.check_call(['cp', '-rf', os.path.join(base_dir, '.vim/bundle/*'), tmp_path])
         with cd(tmp_path):
             plugin_name = self.plugin_name_from_repo(plugin_repo)
             print(plugin_name)
