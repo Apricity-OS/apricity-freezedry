@@ -162,7 +162,7 @@ class GnomeModule(Module):
                               xsettings,
                               logger)
 
-    def set_qt5ct(self, logger):
+    def set_user_qt5ct(self, logger):
         conf = '''[Appearance]
             color_scheme_path=
             custom_palette=false
