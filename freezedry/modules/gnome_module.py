@@ -1,5 +1,7 @@
 import subprocess
 
+import os
+
 from freezedry.error import ApplyError
 from .core import Module
 
@@ -160,6 +162,14 @@ class GnomeModule(Module):
                               xsettings,
                               logger)
 
+    def set_qt5ct(self, logger):
+        conf = '''[Appearance]
+            color_scheme_path=
+            custom_palette=false
+            style=gtk2'''
+        with open(os.path.expanduser('~/.config/qt5ct/qt5ct.conf'), 'w') as f:
+            f.write(conf)
+
     def do_user_setup(self, module_pool, logger, livecd=False):
         self.cmds = []
         self.set_gtk_theme(logger)
@@ -171,3 +181,4 @@ class GnomeModule(Module):
         self.set_lock_back(logger)
         self.set_misc_gnome(logger)
         self.set_xsettings(module_pool, logger)
+        self.set_qt5ct(logger)
