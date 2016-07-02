@@ -167,6 +167,10 @@ class GnomeModule(Module):
             color_scheme_path=
             custom_palette=false
             style=gtk2'''
+        try:
+            os.mkdir(os.path.expanduser('~/.config/qt5ct'))
+        except OSError:
+            pass
         with open(os.path.expanduser('~/.config/qt5ct/qt5ct.conf'), 'w') as f:
             f.write(conf)
 
