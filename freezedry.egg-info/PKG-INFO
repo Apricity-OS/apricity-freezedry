@@ -1,0 +1,19 @@
+Metadata-Version: 1.1
+Name: freezedry
+Version: 0.1.7
+Summary: Another system configuration tool
+Home-page: https://github.com/Apricity-OS/apricity-freezedry
+Author: Alex Gajewski
+Author-email: agajews@gmail.com
+License: MIT
+Description: Yup
+Keywords: freezedry system configuration
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5

@@ -1,9 +1,10 @@
-from .pacman_module import *
-from .systemd_module import *
-from .vim_module import *
-from .gnome_module import *
-from .gdm_module import *
-from .zsh_module import *
+from .pacman_module import PacmanModule
+from .systemd_module import SystemdModule
+from .vim_module import VimModule
+from .gnome_module import GnomeModule
+from .gdm_module import GdmModule
+from .zsh_module import ZshModule
+from .codeModule import CodeModule
 from .core import ModulePool
 
 reserved_words = ['inherits']
@@ -13,4 +14,5 @@ all_modules = {'pacman': PacmanModule,
                'vim': VimModule,
                'gnome': GnomeModule,
                'gdm': GdmModule,
-               'zsh': ZshModule}
+               'zsh': ZshModule,
+               'code': CodeModule}
