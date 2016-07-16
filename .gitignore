@@ -2,3 +2,6 @@
 *__pycache__
 *.pyc
 *.pyo
+freezedry.egg-info
+dist
+build
