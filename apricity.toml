@@ -82,3 +82,9 @@ apricity = [
 #     rainbow = [
 #         "let g:rainbow_active = 1"
 #     ]
+
+[code]
+[code.user]
+gen = ['echo "Hello world!"', 'echo "Running user code"']
+[code.root]
+gen = ['echo "Hello world #2!"', 'echo "Running root code"']

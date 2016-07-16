@@ -4,7 +4,7 @@ from .vim_module import VimModule
 from .gnome_module import GnomeModule
 from .gdm_module import GdmModule
 from .zsh_module import ZshModule
-from .codeModule import CodeModule
+from .code_module import CodeModule
 from .core import ModulePool
 
 reserved_words = ['inherits']
