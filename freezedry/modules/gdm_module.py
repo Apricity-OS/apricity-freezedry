@@ -9,6 +9,8 @@ class GdmModule(Module):
         self.roles = ['display_manager']
         self.load_default_xsession()
         self.xsettings_extra = []
+        self.deps = [['gdm']]
+        self.services = ['gdm']
 
     def load_default_xsession(self):
         with open('/etc/freezedry/gdm-xsession-format.sh', 'r') as f:
@@ -25,3 +27,14 @@ class GdmModule(Module):
                                   temp_fnm, shell=True)
         except Exception as e:
             print(e)
+
+    def do_root_setup(self, module_pool, logger, livecd=False):
+        module_pool.broadcast('package_manager',
+                              'install_deps',
+                              self.deps,
+                              logger)
+
+        module_pool.broadcast('service_manager',
+                              'enable_services',
+                              self.services,
+                              logger)

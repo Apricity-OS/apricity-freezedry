@@ -10,33 +10,46 @@ class GnomeModule(Module):
     def __init__(self, config, **kwargs):
         Module.__init__(self, config, **kwargs)
 
-        self.gtk_theme = config['gtk_theme']
-        self.shell_theme = config['shell_theme']
-        self.icon_theme = config['icon_theme']
+        self.gtk_theme = self.resolve_attr(config, 'gtk_theme')
+        self.shell_theme = self.resolve_attr(config, 'shell_theme')
+        self.icon_theme = self.resolve_attr(config, 'icon_theme')
 
-        self.extensions = self.gen_list_from_dicts(config['extensions'])
-        self.favorite_apps = self.gen_list_from_dicts(config['favorite_apps'])
+        self.extensions = self.gen_list_from_dicts(
+            self.resolve_attr(config, 'extensions'))
+        self.favorite_apps = self.gen_list_from_dicts(
+            self.resolve_attr(config, 'favorite_apps'))
 
-        self.wallpaper_fnm = config['wallpaper']
-        self.lock_back_fnm = config['lock_background']
+        self.wallpaper_uri = self.resolve_attr(config, 'wallpaper')
+        self.lock_back_uri = self.resolve_attr(config, 'lock_background')
 
-        self.nautilus_zoom = config['nautilus']['default_zoom']
-        self.button_layout = config['gtk_button_layout']
-        self.dynamic_workspaces = config['dynamic_workspaces']
-        self.desktop_icons = config['desktop_icons']
+        self.nautilus = self.resolve_attr(config, 'nautilus')
+        if self.nautilus:
+            self.nautilus_zoom = self.resolve_attr(self.nautilus,
+                                                   'default_zoom')
+        self.button_layout = self.resolve_attr(config, 'gtk_button_layout')
+        self.dynamic_workspaces = self.resolve_attr(config,
+                                                    'dynamic_workspaces')
+        self.desktop_icons = self.resolve_attr(config, 'desktop_icons')
+
+        self.deps = [['gnome-shell'],
+                     ['gnome-session'],
+                     ['mutter'],
+                     ['gnome-settings-daemon'],
+                     ['gnome-themes-standard'],
+                     ]
+
+    def run_cmd(self, cmd):
+        subprocess.check_call(cmd)
+        self.cmds.append(cmd)
 
     def set_gtk_theme(self, logger):
         try:
-            cmd = [
+            self.run_cmd([
                 'gsettings', 'set', 'org.gnome.desktop.interface',
-                'gtk-theme', '"%s"' % self.gtk_theme]
-            subprocess.check_call(cmd)
-            self.cmds.append(cmd)
-            cmd = [
+                'gtk-theme', '"%s"' % self.gtk_theme])
+            self.run_cmd([
                 'gsettings', 'set', 'org.gnome.desktop.wm.preferences',
-                'theme', '"%s"' % self.gtk_theme]
-            subprocess.check_call(cmd)
-            self.cmds.append(cmd)
+                'theme', '"%s"' % self.gtk_theme])
         except Exception as e:
             print(e)
             error_text = 'Failed to enable gtk theme %s' % self.gtk_theme
@@ -44,11 +57,9 @@ class GnomeModule(Module):
 
     def set_shell_theme(self, logger):
         try:
-            cmd = [
+            self.run_cmd([
                 'gsettings', 'set', 'org.gnome.shell.extensions.user-theme',
-                'name', '"%s"' % self.shell_theme]
-            subprocess.check_call(cmd)
-            self.cmds.append(cmd)
+                'name', '"%s"' % self.shell_theme])
         except Exception as e:
             print(e)
             error_text = 'Failed to enable shell theme %s' % self.shell_theme
@@ -56,11 +67,9 @@ class GnomeModule(Module):
 
     def set_icon_theme(self, logger):
         try:
-            cmd = [
+            self.run_cmd([
                 'gsettings', 'set', 'org.gnome.desktop.interface',
-                'icon-theme', '"%s"' % self.icon_theme]
-            subprocess.check_call(cmd)
-            self.cmds.append(cmd)
+                'icon-theme', '"%s"' % self.icon_theme])
         except Exception as e:
             print(e)
             error_text = 'Failed to enable icon theme %s' % self.icon_theme
@@ -98,69 +107,64 @@ class GnomeModule(Module):
 
     def set_wallpaper(self, logger):
         try:
-            cmd = [
+            fnm = self.resolve_and_download(self.wallpaper_uri,
+                                            '/usr/share/backgrounds/gnome/%s')
+            self.run_cmd([
                 'gsettings', 'set', 'org.gnome.desktop.background',
-                'picture-uri', '"%s"' % self.wallpaper_fnm]
-            subprocess.check_call(cmd)
-            self.cmds.append(cmd)
+                'picture-uri', '"%s"' % fnm])
         except Exception as e:
             print(e)
-            error_text = 'Failed to set wallpaper %s' % self.wallpaper_fnm
+            error_text = 'Failed to set wallpaper %s' % self.wallpaper_uri
             logger.log_error(ApplyError(error_text))
 
     def set_lock_back(self, logger):
         try:
-            cmd = [
+            fnm = self.resolve_and_download(self.wallpaper_uri,
+                                            '/usr/share/backgrounds/gnome/%s')
+            self.run_cmd([
                 'gsettings', 'set', 'org.gnome.desktop.screensaver',
-                'picture-uri', '"%s"' % self.lock_back_fnm]
-            subprocess.check_call(cmd)
-            self.cmds.append(cmd)
+                'picture-uri', '"%s"' % fnm])
         except Exception as e:
             print(e)
             error_text = 'Failed to set lock screen background %s' % \
-                self.lock_back_fnm
+                self.lock_back_uri
             logger.log_error(ApplyError(error_text))
 
     def set_misc_gnome(self, logger):
         try:
-            cmd = [
-                'gsettings', 'set', 'org.gnome.nautilus.icon-view',
-                'default-zoom-level', '"%s"' % self.nautilus_zoom]
-            subprocess.check_call(cmd)
-            self.cmds.append(cmd)
-            cmd = [
-                'gsettings', 'set', 'org.gnome.desktop.wm.preferences',
-                'button-layout', '"%s"' % self.button_layout]
-            subprocess.check_call(cmd)
-            self.cmds.append(cmd)
-            cmd = [
-                'gsettings', 'set',
-                'org.gnome.settings-daemon.plugins.xsettings',
-                'overrides', '{\'Gtk/DecorationLayout\': <\'%s\'>}' %
-                self.button_layout]
-            subprocess.check_call(cmd)
-            self.cmds.append(cmd)
-            cmd = [
-                'gsettings', 'set', 'org.gnome.shell.overrides',
-                'dynamic-workspaces', str(self.dynamic_workspaces).lower()]
-            subprocess.check_call(cmd)
-            self.cmds.append(cmd)
-            cmd = [
-                'gsettings', 'set', 'org.gnome.desktop.background',
-                'show-desktop-icons', str(self.desktop_icons).lower()]
-            subprocess.check_call(cmd)
-            self.cmds.append(cmd)
+            if self.nautilus_zoom:
+                self.run_cmd([
+                    'gsettings', 'set', 'org.gnome.nautilus.icon-view',
+                    'default-zoom-level', '"%s"' % self.nautilus_zoom])
+            if self.button_layout:
+                self.run_cmd([
+                    'gsettings', 'set', 'org.gnome.desktop.wm.preferences',
+                    'button-layout', '"%s"' % self.button_layout])
+                self.run_cmd([
+                    'gsettings', 'set',
+                    'org.gnome.settings-daemon.plugins.xsettings',
+                    'overrides', '{\'Gtk/DecorationLayout\': <\'%s\'>}' %
+                    self.button_layout])
+            if self.dynamic_workspaces:
+                self.run_cmd([
+                    'gsettings', 'set', 'org.gnome.shell.overrides',
+                    'dynamic-workspaces',
+                    str(self.dynamic_workspaces).lower()])
+            if self.desktop_icons:
+                self.run_cmd([
+                    'gsettings', 'set', 'org.gnome.desktop.background',
+                    'show-desktop-icons', str(self.desktop_icons).lower()])
         except Exception as e:
             print(e)
             error_text = 'Failed to set misc gnome settings'
             logger.log_error(ApplyError(error_text))
 
     def set_xsettings(self, module_pool, logger):
-        xsettings = '\n'.join(' '.join(cmd) for cmd in self.cmds)
-        module_pool.broadcast('display_manager',
-                              'append_xsettings',
-                              xsettings,
-                              logger)
+        if len(self.cmds):
+            xsettings = '\n'.join(' '.join(cmd) for cmd in self.cmds)
+            module_pool.broadcast('display_manager',
+                                  'append_xsettings',
+                                  xsettings, logger)
 
     def set_user_qt5ct(self, logger):
         conf = '''[Appearance]
@@ -189,16 +193,27 @@ class GnomeModule(Module):
 
     def do_user_setup(self, module_pool, logger, livecd=False):
         self.cmds = []
-        self.set_gtk_theme(logger)
-        self.set_shell_theme(logger)
-        self.set_icon_theme(logger)
-        self.enable_extensions(logger)
-        self.set_favorite_apps(logger)
-        self.set_wallpaper(logger)
-        self.set_lock_back(logger)
+        if self.gtk_theme:
+            self.set_gtk_theme(logger)
+        if self.shell_theme:
+            self.set_shell_theme(logger)
+        if self.icon_theme:
+            self.set_icon_theme(logger)
+        if self.extensions:
+            self.enable_extensions(logger)
+        if self.favorite_apps:
+            self.set_favorite_apps(logger)
+        if self.wallpaper_uri:
+            self.set_wallpaper(logger)
+        if self.lock_back_uri:
+            self.set_lock_back(logger)
         self.set_misc_gnome(logger)
         self.set_xsettings(module_pool, logger)
         self.set_user_qt5ct(logger)
 
     def do_root_setup(self, module_pool, logger, livecd=False):
+        module_pool.broadcast('package_manager',
+                              'install_deps',
+                              self.deps,
+                              logger)
         self.set_root_qt5ct(logger)

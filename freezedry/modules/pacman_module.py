@@ -9,8 +9,9 @@ class PacmanModule(Module):
     def __init__(self, config, **kwargs):
         Module.__init__(self, config, **kwargs)
         self.roles = ['package_manager']
-        self.packages = self.gen_list_from_dicts(config['packages'])
-        self.keyrings = config['keyrings']
+        self.packages = self.gen_list_from_dicts(
+            self.resolve_attr(config, 'packages'))
+        self.keyrings = self.resolve_attr(config, 'keyrings')
 
     def get_installed_packages(self, logger):
         try:
@@ -25,11 +26,12 @@ class PacmanModule(Module):
             packages[i] = package.decode('utf-8')
         return packages
 
-    def install_dependency(self, dep_options, logger):
-        installed_packages = self.get_installed_packages(logger)
-        already_installed = any_in(installed_packages, dep_options)
-        if not already_installed:
-            self.install_packages([dep_options[0]], logger)
+    def install_deps(self, deps, logger):
+        for dep_options in deps:
+            installed_packages = self.get_installed_packages(logger)
+            already_installed = any_in(installed_packages, dep_options)
+            if not already_installed:
+                self.install_packages([dep_options[0]], logger)
 
     def install_package(self, package, logger):
         command = ['/usr/bin/sudo', 'pacman', '-S', package, '--noconfirm']
@@ -45,12 +47,13 @@ class PacmanModule(Module):
             self.install_package(package, logger)
 
     def setup_pacman(self, logger):
-        for keyring in self.keyrings:
-            for attempt in range(4):
-                subprocess.call(
-                    ['sudo', 'pacman-key', '--init', keyring])
-                subprocess.call(
-                    ['sudo', 'pacman-key', '--populate', keyring])
+        if self.keyrings:
+            for keyring in self.keyrings:
+                for attempt in range(4):
+                    subprocess.call(
+                        ['sudo', 'pacman-key', '--init', keyring])
+                    subprocess.call(
+                        ['sudo', 'pacman-key', '--populate', keyring])
         subprocess.call(
             ['sudo', 'pacman', '-Syy'])
 

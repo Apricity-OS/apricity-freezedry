@@ -10,6 +10,7 @@ class ZshModule(Module):
         Module.__init__(self, config, **kwargs)
         self.roles = ['shell']
         self.zshrc = self.gen_list_from_dicts(config['zshrc'])
+        self.deps = [['zsh']]
 
     def install_root_zshrc(self, logger):
         tmp_fnm = '/tmp/freezedry_zshrc'
@@ -27,6 +28,10 @@ class ZshModule(Module):
 
     def do_root_setup(self, module_pool, logger, livecd=False):
         self.install_root_zshrc(logger)
+        module_pool.broadcast('package_manager',
+                              'install_deps',
+                              self.deps,
+                              logger)
 
     def do_user_setup(self, module_pool, logger, livecd=False):
         self.install_user_zshrc(logger)

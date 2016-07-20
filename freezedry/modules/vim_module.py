@@ -12,18 +12,21 @@ from .core import Module
 class VimModule(Module):
     def __init__(self, config, **kwargs):
         Module.__init__(self, config, **kwargs)
-        self.dep_options = ['vim', 'gvim']
-        self.plugin_manager = config['plugin_manager']
-        self.plugin_repos = self.gen_list_from_dicts(config['plugins'])
-        self.vimrc = self.gen_list_from_dicts(config['vimrc'])
+        self.deps = [['vim', 'gvim']]
+        self.plugin_manager = self.resolve_attr(config, 'plugin_manager')
+        self.plugin_repos = self.gen_list_from_dicts(
+            self.resolve_attr(config, 'plugins'))
+        self.vimrc = self.gen_list_from_dicts(
+            self.resolve_attr(config, 'vimrc'))
         self.check_plugin_manager()
 
     def check_plugin_manager(self):
-        if self.plugin_manager == 'pathogen':
-            self.vimrc.insert(0, 'execute pathogen#infect()')
-        else:
-            raise Exception('Invalid plugin manager `%s`' %
-                            self.plugin_manager)
+        if self.plugin_manager:
+            if self.plugin_manager == 'pathogen':
+                self.vimrc.insert(0, 'execute pathogen#infect()')
+            else:
+                raise Exception('Invalid plugin manager `%s`' %
+                                self.plugin_manager)
 
     def install_root_pathogen_at(self, base_dir, logger):
         subprocess.check_call(['sudo', 'mkdir', '-p',
@@ -161,16 +164,18 @@ class VimModule(Module):
 
     def do_root_setup(self, module_pool, logger, livecd=False):
         module_pool.broadcast('package_manager',
-                              'install_dependency',
-                              self.dep_options,
+                              'install_deps',
+                              self.deps,
                               logger)
-        self.install_plugin_manager('root', logger)
-        for plugin_repo in self.plugin_repos:
-            self.install_plugin(plugin_repo, 'root', logger)
-        self.install_root_vimrc(logger)
+        if self.plugin_manager:
+            self.install_plugin_manager('root', logger)
+            for plugin_repo in self.plugin_repos:
+                self.install_plugin(plugin_repo, 'root', logger)
+            self.install_root_vimrc(logger)
 
     def do_user_setup(self, module_pool, logger, livecd=False):
-        self.install_plugin_manager('user', logger)
-        for plugin_repo in self.plugin_repos:
-            self.install_plugin(plugin_repo, 'user', logger)
-        self.install_user_vimrc(logger)
+        if self.plugin_manager:
+            self.install_plugin_manager('user', logger)
+            for plugin_repo in self.plugin_repos:
+                self.install_plugin(plugin_repo, 'user', logger)
+            self.install_user_vimrc(logger)

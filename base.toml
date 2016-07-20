@@ -18,14 +18,14 @@
     ]
 
 [gnome]
-gtk_theme = "Arctic Apricity"
-shell_theme = "Arctic Apricity"
-icon_theme = "Apricity Icons"
-wallpaper = "file:///usr/share/backgrounds/gnome/tahoe.jpg"
-lock_background = "file:///usr/share/backgrounds/gnome/bliss.jpg"
-gtk_button_layout = ":minimize,maximize,close"
-dynamic_workspaces = false
-desktop_icons = true
+# gtk_theme = "Arctic Apricity"
+# shell_theme = "Arctic Apricity"
+# icon_theme = "Apricity Icons"
+wallpaper = "http://localhost:3000/upload/apagajewski/aurora.jpg"
+# lock_background = "file:///usr/share/backgrounds/gnome/bliss.jpg"
+# gtk_button_layout = ":minimize,maximize,close"
+# dynamic_workspaces = false
+# desktop_icons = true
     [gnome.nautilus]
     default_zoom = 'small'
     [gnome.extensions]
