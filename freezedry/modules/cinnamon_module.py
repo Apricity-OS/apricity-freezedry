@@ -121,18 +121,9 @@ class CinnamonModule(Module):
                     'org.cinnamon.settings-daemon.plugins.xsettings',
                     'overrides', '{\'Gtk/DecorationLayout\': <\'%s\'>}' %
                     self.button_layout])
-            if self.dynamic_workspaces:
-                self.run_cmd([
-                    'gsettings', 'set', 'org.gnome.shell.overrides',
-                    'dynamic-workspaces',
-                    str(self.dynamic_workspaces).lower()])
-            if self.desktop_icons:
-                self.run_cmd([
-                    'gsettings', 'set', 'org.gnome.desktop.background',
-                    'show-desktop-icons', str(self.desktop_icons).lower()])
         except Exception as e:
             print(e)
-            error_text = 'Failed to set misc gnome settings'
+            error_text = 'Failed to set misc cinnamon settings'
             logger.log_error(ApplyError(error_text))
 
     def set_xsettings(self, module_pool, logger):
@@ -175,8 +166,6 @@ class CinnamonModule(Module):
             self.set_shell_theme(logger)
         if self.icon_theme:
             self.set_icon_theme(logger)
-        if self.extensions:
-            self.enable_extensions(logger)
         if self.favorite_apps:
             self.set_favorite_apps(logger)
         if self.wallpaper_uri:

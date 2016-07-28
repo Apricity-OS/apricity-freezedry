@@ -131,7 +131,7 @@ class GnomeModule(Module):
 
     def set_misc_gnome(self, logger):
         try:
-            if self.nautilus_zoom:
+            if self.nautilus and self.nautilus_zoom:
                 self.run_cmd([
                     'gsettings', 'set', 'org.gnome.nautilus.icon-view',
                     'default-zoom-level', '"%s"' % self.nautilus_zoom])
