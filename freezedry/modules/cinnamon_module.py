@@ -6,7 +6,7 @@ from freezedry.error import ApplyError
 from .core import Module
 
 
-class GnomeModule(Module):
+class CinnamonModule(Module):
     def __init__(self, config, **kwargs):
         Module.__init__(self, config, **kwargs)
 
@@ -14,28 +14,25 @@ class GnomeModule(Module):
         self.shell_theme = self.resolve_attr(config, 'shell_theme')
         self.icon_theme = self.resolve_attr(config, 'icon_theme')
 
-        self.extensions = self.gen_list_from_dicts(
-            self.resolve_attr(config, 'extensions'))
+        # self.extensions = self.gen_list_from_dicts(
+        #     self.resolve_attr(config, 'extensions'))
         self.favorite_apps = self.gen_list_from_dicts(
             self.resolve_attr(config, 'favorite_apps'))
 
         self.wallpaper_uri = self.resolve_attr(config, 'wallpaper')
-        self.lock_back_uri = self.resolve_attr(config, 'lock_background')
+        # self.lock_back_uri = self.resolve_attr(config, 'lock_background')
 
-        self.nautilus = self.resolve_attr(config, 'nautilus')
-        if self.nautilus:
-            self.nautilus_zoom = self.resolve_attr(self.nautilus,
-                                                   'default_zoom')
+        # self.nautilus = self.resolve_attr(config, 'nautilus')
+        # if self.nautilus:
+        #     self.nautilus_zoom = self.resolve_attr(self.nautilus,
+        #                                            'default_zoom')
         self.button_layout = self.resolve_attr(config, 'gtk_button_layout')
-        self.dynamic_workspaces = self.resolve_attr(config,
-                                                    'dynamic_workspaces')
-        self.desktop_icons = self.resolve_attr(config, 'desktop_icons')
+        # self.dynamic_workspaces = self.resolve_attr(config,
+        #                                             'dynamic_workspaces')
+        # self.desktop_icons = self.resolve_attr(config, 'desktop_icons')
 
-        self.deps = [['gnome-shell'],
-                     ['gnome-session'],
-                     ['mutter'],
-                     ['gnome-settings-daemon'],
-                     ['gnome-themes-standard']]
+        self.deps = [['cinnamon'],
+                     ['mutter']]
 
     def run_cmd(self, cmd):
         subprocess.check_call(cmd)
@@ -44,10 +41,10 @@ class GnomeModule(Module):
     def set_gtk_theme(self, logger):
         try:
             self.run_cmd([
-                'gsettings', 'set', 'org.gnome.desktop.interface',
+                'gsettings', 'set', 'org.cinnamon.desktop.interface',
                 'gtk-theme', '"%s"' % self.gtk_theme])
             self.run_cmd([
-                'gsettings', 'set', 'org.gnome.desktop.wm.preferences',
+                'gsettings', 'set', 'org.cinnamon.desktop.wm.preferences',
                 'theme', '"%s"' % self.gtk_theme])
         except Exception as e:
             print(e)
@@ -57,7 +54,7 @@ class GnomeModule(Module):
     def set_shell_theme(self, logger):
         try:
             self.run_cmd([
-                'gsettings', 'set', 'org.gnome.shell.extensions.user-theme',
+                'gsettings', 'set', 'org.cinnamon.theme',
                 'name', '"%s"' % self.shell_theme])
         except Exception as e:
             print(e)
@@ -74,31 +71,28 @@ class GnomeModule(Module):
             error_text = 'Failed to enable icon theme %s' % self.icon_theme
             logger.log_error(ApplyError(error_text))
 
-    def enable_extensions(self, logger):
-        try:
-            cmd = [
-                'gsettings', 'set', 'org.gnome.shell',
-                'enabled-extensions', '%s' % str(self.extensions)]
-            subprocess.check_call(cmd)
-            xcmd = [
-                'gsettings', 'set', 'org.gnome.shell',
-                'enabled-extensions', '"%s"' % str(self.extensions)]
-            self.cmds.append(xcmd)
-        except Exception as e:
-            print(e)
-            error_text = 'Failed to enable gnome shell extensions'
-            logger.log_error(ApplyError(error_text))
-
     def set_favorite_apps(self, logger):
         try:
-            cmd = [
-                'gsettings', 'set', 'org.gnome.shell',
-                'favorite-apps', '%s' % str(self.favorite_apps)]
-            subprocess.check_call(cmd)
-            xcmd = [
-                'gsettings', 'set', 'org.gnome.shell',
-                'favorite-apps', '"%s"' % str(self.favorite_apps)]
-            self.cmds.append(xcmd)
+            launcher_schema = '''
+                {
+                    "launcherList": {
+                    "type": "generic",
+                    "default": %s
+                    },
+                    "allow-dragging": {
+                    "type": "checkbox",
+                    "default": true,
+                    "description": "Allow dragging of launchers"
+                    }
+                }
+            ''' % str(self.favorite_apps).replace("'", '"')
+            tmp_fnm = '/tmp/cinnamon-schema.json'
+            dest_fnm = ('/usr/share/cinnamon/applets/'
+                        'panel-launchers@cinnamon.org/'
+                        'settings-schema.json')
+            with open(tmp_fnm, 'w') as f:
+                f.write(launcher_schema)
+            subprocess.check_call(['sudo', 'cp', '-f', tmp_fnm, dest_fnm])
         except Exception as e:
             print(e)
             error_text = 'Failed to set favorite apps'
@@ -109,39 +103,22 @@ class GnomeModule(Module):
             fnm = self.resolve_and_download(self.wallpaper_uri,
                                             '/usr/share/backgrounds/gnome/%s')
             self.run_cmd([
-                'gsettings', 'set', 'org.gnome.desktop.background',
+                'gsettings', 'set', 'org.cinnamon.desktop.background',
                 'picture-uri', '"%s"' % fnm])
         except Exception as e:
             print(e)
             error_text = 'Failed to set wallpaper %s' % self.wallpaper_uri
             logger.log_error(ApplyError(error_text))
 
-    def set_lock_back(self, logger):
+    def set_misc_cinnamon(self, logger):
         try:
-            fnm = self.resolve_and_download(self.wallpaper_uri,
-                                            '/usr/share/backgrounds/gnome/%s')
-            self.run_cmd([
-                'gsettings', 'set', 'org.gnome.desktop.screensaver',
-                'picture-uri', '"%s"' % fnm])
-        except Exception as e:
-            print(e)
-            error_text = 'Failed to set lock screen background %s' % \
-                self.lock_back_uri
-            logger.log_error(ApplyError(error_text))
-
-    def set_misc_gnome(self, logger):
-        try:
-            if self.nautilus_zoom:
-                self.run_cmd([
-                    'gsettings', 'set', 'org.gnome.nautilus.icon-view',
-                    'default-zoom-level', '"%s"' % self.nautilus_zoom])
             if self.button_layout:
                 self.run_cmd([
-                    'gsettings', 'set', 'org.gnome.desktop.wm.preferences',
+                    'gsettings', 'set', 'org.cinnamon.desktop.wm.preferences',
                     'button-layout', '"%s"' % self.button_layout])
                 self.run_cmd([
                     'gsettings', 'set',
-                    'org.gnome.settings-daemon.plugins.xsettings',
+                    'org.cinnamon.settings-daemon.plugins.xsettings',
                     'overrides', '{\'Gtk/DecorationLayout\': <\'%s\'>}' %
                     self.button_layout])
             if self.dynamic_workspaces:
@@ -204,9 +181,7 @@ class GnomeModule(Module):
             self.set_favorite_apps(logger)
         if self.wallpaper_uri:
             self.set_wallpaper(logger)
-        if self.lock_back_uri:
-            self.set_lock_back(logger)
-        self.set_misc_gnome(logger)
+        self.set_misc_cinnamon(logger)
         self.set_xsettings(module_pool, logger)
         self.set_user_qt5ct(logger)
 
