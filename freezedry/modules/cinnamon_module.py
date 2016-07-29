@@ -178,8 +178,8 @@ class CinnamonModule(Module):
         self.set_misc_cinnamon(logger)
         if livecd:
             self.set_xsettings(module_pool, logger)
-        else:
-            self.clear_xsettings(module_pool, logger)
+        # else:
+        #     self.clear_xsettings(module_pool, logger)
         self.set_user_qt5ct(logger)
 
     def do_root_setup(self, module_pool, logger, livecd=False):
