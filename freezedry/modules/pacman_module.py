@@ -37,7 +37,8 @@ class PacmanModule(Module):
                 self.install_packages([dep_options[0]], logger)
 
     def install_package(self, package, logger):
-        command = ['/usr/bin/sudo', 'pacman', '-S', package, '--noconfirm']
+        command = ['/usr/bin/sudo', 'pacman', '-S', package,
+                   '--noconfirm', '--needed']
         try:
             subprocess.check_call(command)
         except Exception as e:
