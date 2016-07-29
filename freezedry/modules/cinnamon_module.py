@@ -188,3 +188,5 @@ class CinnamonModule(Module):
                               self.deps,
                               logger)
         self.set_root_qt5ct(logger)
+        if not livecd:
+            self.clear_xsettings(module_pool, logger)
