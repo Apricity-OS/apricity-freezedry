@@ -12,6 +12,7 @@ class PacmanModule(Module):
         self.packages = self.gen_list_from_dicts(
             self.resolve_attr(config, 'packages'))
         self.keyrings = self.resolve_attr(config, 'keyrings')
+        self.pacman_setup = False
 
     def get_installed_packages(self, logger):
         try:
@@ -27,6 +28,8 @@ class PacmanModule(Module):
         return packages
 
     def install_deps(self, deps, logger):
+        if not self.pacman_setup:
+            self.setup_pacman(logger)
         for dep_options in deps:
             installed_packages = self.get_installed_packages(logger)
             already_installed = any_in(installed_packages, dep_options)
@@ -56,7 +59,9 @@ class PacmanModule(Module):
                         ['sudo', 'pacman-key', '--populate', keyring])
         subprocess.call(
             ['sudo', 'pacman', '-Syy'])
+        self.pacman_setup = True
 
     def do_root_setup(self, module_pool, logger, livecd=False):
-        self.setup_pacman(logger)
+        if not self.pacman_setup:
+            self.setup_pacman(logger)
         self.install_packages(self.packages, logger)
