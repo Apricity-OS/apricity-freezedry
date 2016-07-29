@@ -133,6 +133,11 @@ class CinnamonModule(Module):
                                   'append_xsettings',
                                   xsettings, logger)
 
+    def clear_xsettings(self, module_pool, logger):
+        module_pool.broadcast('display_manager',
+                              'clear_xsettings',
+                              logger)
+
     def set_user_qt5ct(self, logger):
         conf = '''[Appearance]
             color_scheme_path=
@@ -171,7 +176,10 @@ class CinnamonModule(Module):
         if self.wallpaper_uri:
             self.set_wallpaper(logger)
         self.set_misc_cinnamon(logger)
-        self.set_xsettings(module_pool, logger)
+        if livecd:
+            self.set_xsettings(module_pool, logger)
+        else:
+            self.clear_xsettings(module_pool, logger)
         self.set_user_qt5ct(logger)
 
     def do_root_setup(self, module_pool, logger, livecd=False):

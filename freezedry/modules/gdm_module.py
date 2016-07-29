@@ -16,6 +16,10 @@ class GdmModule(Module):
         with open('/etc/freezedry/gdm-xsession-format.sh', 'r') as f:
             self.xsession_format = f.read()
 
+    def clear_xsettings(self, logger):
+        self.xsettings_extra = []
+        self.append_xsettings([], logger)
+
     def append_xsettings(self, xsettings, logger):
         self.xsettings_extra.append(xsettings)
         xsettings = self.xsession_format % '\n'.join(self.xsettings_extra)
