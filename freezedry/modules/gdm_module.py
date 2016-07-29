@@ -18,7 +18,7 @@ class GdmModule(Module):
 
     def clear_xsettings(self, logger):
         self.xsettings_extra = []
-        self.append_xsettings([], logger)
+        self.append_xsettings('', logger)
 
     def append_xsettings(self, xsettings, logger):
         self.xsettings_extra.append(xsettings)

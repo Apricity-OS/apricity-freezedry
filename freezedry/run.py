@@ -19,9 +19,9 @@ def main():
     if args.fnm:
         mode = []
         if args.user:
-            mode.append(['user'])
+            mode.append('user')
         if args.root:
-            mode.append(['root'])
+            mode.append('root')
         if len(mode) == 0:
             mode = ['user', 'root']
         load_config(args.fnm, mode,
