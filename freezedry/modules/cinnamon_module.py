@@ -133,6 +133,12 @@ class CinnamonModule(Module):
                                   'append_xsettings',
                                   xsettings, logger)
 
+    def set_desktop_environment(self, module_pool, logger):
+        module_pool.broadcast('display_manager',
+                              'set_desktop_environment',
+                              'cinnamon',
+                              logger)
+
     def clear_xsettings(self, module_pool, logger):
         module_pool.broadcast('display_manager',
                               'clear_xsettings',
@@ -188,5 +194,7 @@ class CinnamonModule(Module):
                               self.deps,
                               logger)
         self.set_root_qt5ct(logger)
-        if not livecd:
+        if livecd:
+            self.set_desktop_environment(module_pool, logger)
+        else:
             self.clear_xsettings(module_pool, logger)

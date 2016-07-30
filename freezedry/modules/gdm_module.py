@@ -8,9 +8,22 @@ class GdmModule(Module):
         Module.__init__(self, config, **kwargs)
         self.roles = ['display_manager']
         self.load_default_xsession()
+        self.load_default_de()
         self.xsettings_extra = []
         self.deps = [['gdm']]
         self.services = ['gdm']
+
+    def load_default_de(self):
+        with open('/etc/freezedry/gdm-custom-format.conf', 'r') as f:
+            self.gdm_custom_format = f.read()
+
+    def set_desktop_environment(self, desktop_environment, logger):
+        custom_format = self.gdm_custom_format % desktop_environment
+        temp_fnm = '/tmp/gdm_custom.conf'
+        with open(temp_fnm, 'w') as f:
+            f.write(custom_format)
+        subprocess.check_call('su -c \'cat %s > /etc/gdm/custom.conf\'' %
+                              temp_fnm, shell=True)
 
     def load_default_xsession(self):
         with open('/etc/freezedry/gdm-xsession-format.sh', 'r') as f:
