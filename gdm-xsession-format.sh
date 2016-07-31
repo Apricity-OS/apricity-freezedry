@@ -55,7 +55,12 @@ fi
 # Make sure dbus is available then set gsettings
 export DISPLAY=:0
 
-%s
+if [ -e ~/.firstrun.ran ]
+then
+    %s
+else
+    touch ~/.firstrun.ran
+fi
 
 gnome-keyring-daemon -rd
 echo "X session wrapper complete, running session $@"
