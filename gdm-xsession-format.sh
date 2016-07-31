@@ -57,9 +57,10 @@ export DISPLAY=:0
 
 if [ -e ~/.firstrun.ran ]
 then
-    %s
+    echo "Not running firstrun stuff"
 else
     touch ~/.firstrun.ran
+    %s
 fi
 
 gnome-keyring-daemon -rd
