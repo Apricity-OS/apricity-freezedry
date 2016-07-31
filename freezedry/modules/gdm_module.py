@@ -16,9 +16,14 @@ class GdmModule(Module):
     def load_default_de(self):
         with open('/etc/freezedry/gdm-custom-format.conf', 'r') as f:
             self.gdm_custom_format = f.read()
+        with open('/etc/freezedry/gdm-custom-live-format.conf', 'r') as f:
+            self.gdm_custom_live_format = f.read()
 
-    def set_desktop_environment(self, desktop_environment, logger):
-        custom_format = self.gdm_custom_format % desktop_environment
+    def set_desktop_environment(self, desktop_environment, logger, live=False):
+        if live:
+            custom_format = self.gdm_custom_live_format % desktop_environment
+        else:
+            custom_format = self.gdm_custom_format % desktop_environment
         temp_fnm = '/tmp/gdm_custom.conf'
         with open(temp_fnm, 'w') as f:
             f.write(custom_format)

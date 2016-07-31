@@ -195,6 +195,7 @@ class CinnamonModule(Module):
                               logger)
         self.set_root_qt5ct(logger)
         if livecd:
-            self.set_desktop_environment(module_pool, logger)
+            self.set_desktop_environment(module_pool, logger,
+                                         live=True)
         # else:
         #     self.clear_xsettings(module_pool, logger)
