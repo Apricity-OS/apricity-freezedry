@@ -133,11 +133,12 @@ class CinnamonModule(Module):
                                   'append_xsettings',
                                   xsettings, logger)
 
-    def set_desktop_environment(self, module_pool, logger):
+    def set_desktop_environment(self, module_pool, logger, live=False):
         module_pool.broadcast('display_manager',
                               'set_desktop_environment',
                               'cinnamon',
-                              logger)
+                              logger,
+                              live=live)
 
     def clear_xsettings(self, module_pool, logger):
         module_pool.broadcast('display_manager',
