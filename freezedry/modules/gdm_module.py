@@ -27,8 +27,8 @@ class GdmModule(Module):
         temp_fnm = '/tmp/gdm_account.conf'
         with open(temp_fnm, 'w') as f:
             f.write(account_format)
-        subprocess.check_call('sudo', 'mkdir', '-p',
-                              '/var/lib/AccountsService/users')
+        subprocess.check_call(['sudo', 'mkdir', '-p',
+                               '/var/lib/AccountsService/users'])
         subprocess.check_call(
             'su -c \'cat %s > /var/lib/AccountsService/users/%s\'' %
             (temp_fnm, os.environ['USER']), shell=True)
