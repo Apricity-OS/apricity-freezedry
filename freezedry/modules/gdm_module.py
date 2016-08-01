@@ -28,9 +28,9 @@ class GdmModule(Module):
         # subprocess.check_call(
         #     'su -c \'cat %s > /etc/gdm/custom.conf\'' %
         #     temp_fnm, shell=True)
-        subprocess.check_call(
+        subprocess.check_call([
             'sudo', 'sed', '-i', 's/gnome/%s/g' % desktop_environment,
-            '/var/lib/AccountsService/users/%s' % os.environ['USER'])
+            '/var/lib/AccountsService/users/%s' % os.environ['USER']])
 
     def load_default_xsession(self):
         with open('/etc/freezedry/gdm-xsession-format.sh', 'r') as f:
