@@ -31,9 +31,12 @@ class GdmModule(Module):
         subprocess.check_call(['sudo', 'mkdir', '-p',
                                '/var/lib/AccountsService/users'])
         for f in glob('/home/*'):
+            username = os.path.basename(f)
             subprocess.check_call(
                 'su -c \'cat %s > /var/lib/AccountsService/users/%s\'' %
-                (temp_fnm, os.path.basename(f)), shell=True)
+                (temp_fnm, username), shell=True)
+            subprocess.call(['sudo', 'rm',
+                             '/home/%s/.firstrun.ran' % username])
         # subprocess.check_call([
         #     'sudo', 'sed', '-i', 's/gnome/%s/g' % desktop_environment,
         #     '/var/lib/AccountsService/users/%s' % os.environ['USER']])
