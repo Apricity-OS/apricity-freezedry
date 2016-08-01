@@ -1,5 +1,5 @@
 import subprocess
-import os
+from glob import glob
 
 from .core import Module
 
@@ -29,9 +29,10 @@ class GdmModule(Module):
             f.write(account_format)
         subprocess.check_call(['sudo', 'mkdir', '-p',
                                '/var/lib/AccountsService/users'])
-        subprocess.check_call(
-            'su -c \'cat %s > /var/lib/AccountsService/users/%s\'' %
-            (temp_fnm, os.environ['USER']), shell=True)
+        for f in glob('/var/lib/AccountsService/users/*'):
+            subprocess.check_call(
+                'su -c \'cat %s > %s\'' %
+                (temp_fnm, f), shell=True)
         # subprocess.check_call([
         #     'sudo', 'sed', '-i', 's/gnome/%s/g' % desktop_environment,
         #     '/var/lib/AccountsService/users/%s' % os.environ['USER']])
