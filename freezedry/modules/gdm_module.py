@@ -32,7 +32,7 @@ class GdmModule(Module):
                                '/var/lib/AccountsService/users'])
         for f in glob('/home/*'):
             subprocess.check_call(
-                'su -c \'cat /var/lib/AccountsService/users/%s > %s\'' %
+                'su -c \'cat %s > /var/lib/AccountsService/users/%s\'' %
                 (temp_fnm, os.path.basename(f)), shell=True)
         # subprocess.check_call([
         #     'sudo', 'sed', '-i', 's/gnome/%s/g' % desktop_environment,
