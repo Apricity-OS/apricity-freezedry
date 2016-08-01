@@ -40,12 +40,16 @@ class CinnamonModule(Module):
 
     def set_gtk_theme(self, logger):
         try:
+            fnm = self.resolve_and_download(self.gtk_theme,
+                                            '/usr/share/themes/%s',
+                                            processor=self.sudo_unzip)
+            gtk_theme = os.path.basename(fnm)
             self.run_cmd([
                 'gsettings', 'set', 'org.cinnamon.desktop.interface',
-                'gtk-theme', '"%s"' % self.gtk_theme])
+                'gtk-theme', '"%s"' % gtk_theme])
             self.run_cmd([
                 'gsettings', 'set', 'org.cinnamon.desktop.wm.preferences',
-                'theme', '"%s"' % self.gtk_theme])
+                'theme', '"%s"' % gtk_theme])
         except Exception as e:
             print(e)
             error_text = 'Failed to enable gtk theme %s' % self.gtk_theme
@@ -53,9 +57,13 @@ class CinnamonModule(Module):
 
     def set_shell_theme(self, logger):
         try:
+            fnm = self.resolve_and_download(self.shell_theme,
+                                            '/usr/share/themes/%s',
+                                            processor=self.sudo_unzip)
+            shell_theme = os.path.basename(fnm)
             self.run_cmd([
                 'gsettings', 'set', 'org.cinnamon.theme',
-                'name', '"%s"' % self.shell_theme])
+                'name', '"%s"' % shell_theme])
         except Exception as e:
             print(e)
             error_text = 'Failed to enable shell theme %s' % self.shell_theme
@@ -63,9 +71,13 @@ class CinnamonModule(Module):
 
     def set_icon_theme(self, logger):
         try:
+            fnm = self.resolve_and_download(self.icon_theme,
+                                            '/usr/share/icons/%s',
+                                            processor=self.sudo_unzip)
+            icon_theme = os.path.basename(fnm)
             self.run_cmd([
                 'gsettings', 'set', 'org.cinnamon.desktop.interface',
-                'icon-theme', '"%s"' % self.icon_theme])
+                'icon-theme', '"%s"' % icon_theme])
         except Exception as e:
             print(e)
             error_text = 'Failed to enable icon theme %s' % self.icon_theme
@@ -196,6 +208,6 @@ class CinnamonModule(Module):
                               logger)
         self.set_root_qt5ct(logger)
         self.set_desktop_environment(module_pool, logger,
-                                        live=livecd)
+                                     live=livecd)
         # else:
         #     self.clear_xsettings(module_pool, logger)

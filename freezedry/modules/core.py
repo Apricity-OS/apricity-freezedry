@@ -1,4 +1,5 @@
 import subprocess
+import os.path
 
 
 class Module(object):
@@ -14,15 +15,21 @@ class Module(object):
                 items += current_list
         return items
 
-    def resolve_and_download(self, uri, dest):
-        type = self.wallpaper_uri.split(':')[0]
+    def resolve_and_download(self, uri, dest, processor=None):
+        type = uri.split(':')[0]
         if type == 'http' or type == 'https':
-            file = uri.split('/')[-1]
-            fnm = dest % file
+            fnm = dest % uri.split('/')[-1]
             subprocess.check_call(['sudo', 'wget', uri, '-O', fnm])
+            if processor is not None:
+                fnm = processor(fnm)
         else:
             fnm = uri
         return fnm
+
+    def sudo_unzip(self, fnm):
+        subprocess.check_call(['sudo', 'unzip', '-o', fnm,
+                               '-d', os.path.splitext(fnm)[0]])
+        return os.path.splitext(fnm)[0]
 
     def resolve_attr(self, config, key):
         if key in config.keys():

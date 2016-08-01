@@ -1,20 +1,20 @@
 # inherits = "desktop.toml"
 
-[pacman]
-    [pacman.packages]
-    desktop_environment = [
-        "cinnamon",
-        "mutter",
-        "network-manager-applet",
-        "polkit-gnome-gtk2",
-    ]
-    customizations = [
-        "apricity-themes-cinnamon",
-    ]
+# [pacman]
+#     [pacman.packages]
+#     desktop_environment = [
+#         "cinnamon",
+#         "mutter",
+#         "network-manager-applet",
+#         "polkit-gnome-gtk2",
+#     ]
+#     customizations = [
+#         "apricity-themes-cinnamon",
+#     ]
 
 [cinnamon]
-gtk_theme = "Arctic Apricity"
-shell_theme = "Arctic Apricity"
+gtk_theme = "http://localhost:3000/assets/Arc-Dark.zip"
+shell_theme = "http://localhost:3000/assets/Arc-Dark.zip"
 icon_theme = "Apricity Icons"
 wallpaper = "file:///usr/share/backgrounds/gnome/snow-white.jpg"
 gtk_button_layout = ":minimize,maximize,close"
