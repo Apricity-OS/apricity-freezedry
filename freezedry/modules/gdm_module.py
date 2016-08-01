@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 from .core import Module
 
@@ -20,21 +21,16 @@ class GdmModule(Module):
             self.gdm_custom_live_format = f.read()
 
     def set_desktop_environment(self, desktop_environment, logger, live=False):
-        if live:
-            custom_format = self.gdm_custom_live_format % desktop_environment
-        else:
-            custom_format = self.gdm_custom_format % desktop_environment
-        temp_fnm = '/tmp/gdm_custom.conf'
-        with open(temp_fnm, 'w') as f:
-            f.write(custom_format)
-        if live:
-            subprocess.check_call(
-                'su -c \'cat %s > /etc/apricity-tmp/custom.conf\'' %
-                temp_fnm, shell=True)
-        else:
-            subprocess.check_call(
-                'su -c \'cat %s > /etc/gdm/custom.conf\'' %
-                temp_fnm, shell=True)
+        # custom_format = self.gdm_custom_format % desktop_environment
+        # temp_fnm = '/tmp/gdm_custom.conf'
+        # with open(temp_fnm, 'w') as f:
+        #     f.write(custom_format)
+        # subprocess.check_call(
+        #     'su -c \'cat %s > /etc/gdm/custom.conf\'' %
+        #     temp_fnm, shell=True)
+        subprocess.check_call(
+            'sudo', 'sed', '-i', 's/gnome/%s/g' % desktop_environment,
+            '/var/lib/AccountsService/users/%s' % os.environ['USER'])
 
     def load_default_xsession(self):
         with open('/etc/freezedry/gdm-xsession-format.sh', 'r') as f:
