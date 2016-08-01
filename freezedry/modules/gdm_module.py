@@ -27,8 +27,14 @@ class GdmModule(Module):
         temp_fnm = '/tmp/gdm_custom.conf'
         with open(temp_fnm, 'w') as f:
             f.write(custom_format)
-        subprocess.check_call('su -c \'cat %s > /etc/gdm/custom.conf\'' %
-                              temp_fnm, shell=True)
+        if live:
+            subprocess.check_call(
+                'su -c \'cat %s > /etc/apricity-tmp/custom.conf\'' %
+                temp_fnm, shell=True)
+        else:
+            subprocess.check_call(
+                'su -c \'cat %s > /etc/gdm/custom.conf\'' %
+                temp_fnm, shell=True)
 
     def load_default_xsession(self):
         with open('/etc/freezedry/gdm-xsession-format.sh', 'r') as f:
