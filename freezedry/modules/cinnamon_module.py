@@ -64,7 +64,7 @@ class CinnamonModule(Module):
     def set_icon_theme(self, logger):
         try:
             self.run_cmd([
-                'gsettings', 'set', 'org.gnome.desktop.interface',
+                'gsettings', 'set', 'org.cinnamon.desktop.interface',
                 'icon-theme', '"%s"' % self.icon_theme])
         except Exception as e:
             print(e)
