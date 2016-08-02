@@ -205,7 +205,7 @@ class CinnamonModule(Module):
         module_pool.broadcast('package_manager',
                               'install_deps',
                               self.deps,
-                              logger)
+                              logger, livecd)
         self.set_root_qt5ct(logger)
         self.set_desktop_environment(module_pool, logger,
                                      live=livecd)

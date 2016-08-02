@@ -166,7 +166,7 @@ class VimModule(Module):
         module_pool.broadcast('package_manager',
                               'install_deps',
                               self.deps,
-                              logger)
+                              logger, livecd)
         if self.plugin_manager:
             self.install_plugin_manager('root', logger)
             for plugin_repo in self.plugin_repos:

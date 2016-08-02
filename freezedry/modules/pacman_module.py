@@ -27,14 +27,14 @@ class PacmanModule(Module):
             packages[i] = package.decode('utf-8')
         return packages
 
-    def install_deps(self, deps, logger):
+    def install_deps(self, deps, logger, livecd=False):
         if not self.pacman_setup:
             self.setup_pacman(logger)
         for dep_options in deps:
             installed_packages = self.get_installed_packages(logger)
             already_installed = any_in(installed_packages, dep_options)
             if not already_installed:
-                self.install_packages([dep_options[0]], logger)
+                self.install_packages([dep_options[0]], logger, livecd)
 
     def install_package(self, package, logger, live=False):
         command = ['/usr/bin/sudo', 'pacman', '-S', package,
@@ -55,7 +55,7 @@ class PacmanModule(Module):
                     error_text = 'Installing package `%s` failed' % package
                     logger.log_error(ApplyError(error_text))
 
-    def install_packages(self, packages, logger, livecd):
+    def install_packages(self, packages, logger, livecd=False):
         for package in packages:
             self.install_package(package, logger, livecd)
 

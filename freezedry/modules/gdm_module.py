@@ -65,7 +65,7 @@ class GdmModule(Module):
         module_pool.broadcast('package_manager',
                               'install_deps',
                               self.deps,
-                              logger)
+                              logger, livecd)
 
         module_pool.broadcast('service_manager',
                               'enable_services',

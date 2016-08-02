@@ -234,7 +234,7 @@ class GnomeModule(Module):
         module_pool.broadcast('package_manager',
                               'install_deps',
                               self.deps,
-                              logger)
+                              logger, livecd)
         self.set_root_qt5ct(logger)
         # if not livecd:
         #     self.clear_xsettings(module_pool, logger)
