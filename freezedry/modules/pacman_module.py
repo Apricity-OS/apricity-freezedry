@@ -36,23 +36,28 @@ class PacmanModule(Module):
             if not already_installed:
                 self.install_packages([dep_options[0]], logger)
 
-    def install_package(self, package, logger):
+    def install_package(self, package, logger, live=False):
         command = ['/usr/bin/sudo', 'pacman', '-S', package,
                    '--noconfirm', '--needed']
         try:
             subprocess.check_call(command)
         except Exception as e:
-            try:
-                subprocess.check_call(['/usr/bin/sudo', 'pacman', '-S',
-                                       package, '--needed'])
-            except Exception as e:
+            if live:
                 print(e)
                 error_text = 'Installing package `%s` failed' % package
                 logger.log_error(ApplyError(error_text))
+            else:
+                try:
+                    subprocess.check_call(['/usr/bin/sudo', 'pacman', '-S',
+                                           package, '--needed'])
+                except Exception as e:
+                    print(e)
+                    error_text = 'Installing package `%s` failed' % package
+                    logger.log_error(ApplyError(error_text))
 
-    def install_packages(self, packages, logger):
+    def install_packages(self, packages, logger, livecd):
         for package in packages:
-            self.install_package(package, logger)
+            self.install_package(package, logger, livecd)
 
     def setup_pacman(self, logger):
         if self.keyrings:
@@ -69,4 +74,4 @@ class PacmanModule(Module):
     def do_root_setup(self, module_pool, logger, livecd=False):
         if not self.pacman_setup:
             self.setup_pacman(logger)
-        self.install_packages(self.packages, logger)
+        self.install_packages(self.packages, logger, livecd)
