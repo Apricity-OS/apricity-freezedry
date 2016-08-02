@@ -42,9 +42,13 @@ class PacmanModule(Module):
         try:
             subprocess.check_call(command)
         except Exception as e:
-            print(e)
-            error_text = 'Installing package `%s` failed' % package
-            logger.log_error(ApplyError(error_text))
+            try:
+                subprocess.check_call(['/usr/bin/sudo', 'pacman', '-S',
+                                       package, '--needed'])
+            except Exception as e:
+                print(e)
+                error_text = 'Installing package `%s` failed' % package
+                logger.log_error(ApplyError(error_text))
 
     def install_packages(self, packages, logger):
         for package in packages:
