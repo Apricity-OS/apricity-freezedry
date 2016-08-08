@@ -68,7 +68,7 @@ class PacmanModule(Module):
                     subprocess.call(
                         ['sudo', 'pacman-key', '--populate', keyring])
         subprocess.call(['sudo', 'pacman', '-Syy'])
-        subprocess.call(['sudo', 'pacman', '-S', 'yaourt'])
+        subprocess.call(['sudo', 'pacman', '-S', 'yaourt-git'])
         self.pacman_setup = True
 
     def do_root_setup(self, module_pool, logger, livecd=False):
