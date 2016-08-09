@@ -37,7 +37,7 @@ class PacmanModule(Module):
                 self.install_packages([dep_options[0]], logger, livecd)
 
     def install_package(self, package, logger, live=False):
-        command = ['/usr/bin/sudo', 'yaourt', '-S', package,
+        command = ['yaourt', '-S', package,
                    '--noconfirm', '--needed']
         try:
             subprocess.check_call(command)
@@ -48,7 +48,7 @@ class PacmanModule(Module):
                 logger.log_error(ApplyError(error_text))
             else:
                 try:
-                    subprocess.check_call(['/usr/bin/sudo', 'yaourt', '-S',
+                    subprocess.check_call(['yaourt', '-S',
                                            package, '--needed'])
                 except Exception as e:
                     print(e)
