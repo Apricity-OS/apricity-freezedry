@@ -63,7 +63,7 @@ else
     %s
 fi
 
-gnome-keyring-daemon -rd
+# gnome-keyring-daemon -rd
 echo "X session wrapper complete, running session $@"
 
 exec $@
