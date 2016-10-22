@@ -194,6 +194,13 @@ class GnomeModule(Module):
         with open(os.path.expanduser('~/.config/qt5ct/qt5ct.conf'), 'w') as f:
             f.write(conf)
 
+    def set_desktop_environment(self, module_pool, logger, live=False):
+        module_pool.broadcast('display_manager',
+                              'set_desktop_environment',
+                              'gnome',
+                              logger,
+                              live=live)
+
     def set_root_qt5ct(self, logger):
         conf = '''[Appearance]
             color_scheme_path=
@@ -236,5 +243,7 @@ class GnomeModule(Module):
                               self.deps,
                               logger, livecd)
         self.set_root_qt5ct(logger)
+        self.set_desktop_environment(module_pool, logger,
+                                     live=livecd)
         # if not livecd:
         #     self.clear_xsettings(module_pool, logger)
