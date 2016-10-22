@@ -16,17 +16,17 @@ class GdmModule(Module):
         self.services = ['gdm']
 
     def load_default_de(self):
-        # with open('/etc/freezedry/gdm-custom-format.conf', 'r') as f:
-        #     self.gdm_custom_format = f.read()
-        # with open('/etc/freezedry/gdm-custom-live-format.conf', 'r') as f:
-        #     self.gdm_custom_live_format = f.read()
+        with open('/etc/freezedry/gdm-custom-format.conf', 'r') as f:
+            self.gdm_custom_format = f.read()
+        with open('/etc/freezedry/gdm-custom-live-format.conf', 'r') as f:
+            self.gdm_custom_live_format = f.read()
         with open('/etc/freezedry/gdm-account-format.conf', 'r') as f:
             self.gdm_account_format = f.read()
 
     def set_desktop_environment(self, desktop_environment, logger, live=False):
         account_format = self.gdm_account_format % desktop_environment
-        temp_fnm = '/tmp/gdm_account.conf'
-        with open(temp_fnm, 'w') as f:
+        tmp_fnm = '/tmp/gdm_account.conf'
+        with open(tmp_fnm, 'w') as f:
             f.write(account_format)
         subprocess.check_call(['sudo', 'mkdir', '-p',
                                '/var/lib/AccountsService/users'])
@@ -34,9 +34,18 @@ class GdmModule(Module):
             username = os.path.basename(f)
             subprocess.check_call(
                 'su -c \'cat %s > /var/lib/AccountsService/users/%s\'' %
-                (temp_fnm, username), shell=True)
+                (tmp_fnm, username), shell=True)
             subprocess.call(['sudo', 'rm',
                              '/home/%s/.firstrun.ran' % username])
+        tmp_fnm = '/tmp/gdm_custom.conf'
+        if live:
+            custom_conf = self.gdm_custom_live_format
+        else:
+            custom_conf = self.gdm_custom_format
+        with open(tmp_fnm, 'w') as f:
+            f.write(custom_conf)
+        subprocess.check_call(['sudo', 'cp', '-f', tmp_fnm,
+                               '/etc/gdm/custom.conf'])
         # subprocess.check_call([
         #     'sudo', 'sed', '-i', 's/gnome/%s/g' % desktop_environment,
         #     '/var/lib/AccountsService/users/%s' % os.environ['USER']])
