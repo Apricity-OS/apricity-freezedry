@@ -44,6 +44,7 @@ class GdmModule(Module):
             custom_conf = self.gdm_custom_format
         with open(tmp_fnm, 'w') as f:
             f.write(custom_conf)
+        print('Writing custom.conf')
         subprocess.check_call(['sudo', 'cp', '-f', tmp_fnm,
                                '/etc/gdm/custom.conf'])
         # subprocess.check_call([
