@@ -26,7 +26,8 @@ apricity = [
 [pacman.packages]
     apricity = [
         "python",
-        "xz"
+        "xz",
+	"random-test"
     ]
 
 [vim]

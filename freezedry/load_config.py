@@ -41,21 +41,22 @@ def init_modules(conf_dict):
     for module_name in sorted(conf_dict.keys()):
         if module_name in all_modules.keys():
             modules.append(all_modules[module_name](conf_dict[module_name]))
+            modules[-1].name = module_name
         elif module_name not in reserved_words:
             raise Exception('Section `%s` not a module or a reserved word' %
                             module_name)
     return modules
 
 
-def load_config(config_fnm, mode=['user', 'root'], livecd=False):
+def load_config(config_fnm, mode=['user', 'root'], livecd=False, disable=[]):
     conf_dict = get_conf_dict(config_fnm)
     modules = init_modules(conf_dict)
     module_pool = ModulePool(modules)
     logger = Logger()
     if 'root' in mode:
-        module_pool.do_root_setup(logger, livecd)
+        module_pool.do_root_setup(logger, livecd, disable=disable)
     if 'user' in mode:
-        module_pool.do_user_setup(logger, livecd)
+        module_pool.do_user_setup(logger, livecd, disable=disable)
     logger.display_errors()
 
 

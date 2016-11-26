@@ -48,20 +48,21 @@ class Module(object):
 
 
 class ModulePool(object):
-
     def __init__(self, modules):
         self.modules = modules
 
     def __repr__(self):
         return str(self.modules)
 
-    def do_root_setup(self, logger, livecd=False):
+    def do_root_setup(self, logger, livecd=False, disable=[]):
         for module in self.modules:
-            module.do_root_setup(self, logger, livecd)
+            if module.name not in disable:
+                module.do_root_setup(self, logger, livecd)
 
-    def do_user_setup(self, logger, livecd=False):
+    def do_user_setup(self, logger, livecd=False, disable=[]):
         for module in self.modules:
-            module.do_user_setup(self, logger, livecd)
+            if module.name not in disable:
+                module.do_user_setup(self, logger, livecd)
 
     def broadcast(self, role, action, *args, **kwargs):
         for module in self.modules:

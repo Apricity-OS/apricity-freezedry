@@ -10,6 +10,7 @@ def get_parser():
     parser.add_argument('--user', action='store_true')
     parser.add_argument('--root', action='store_true')
     parser.add_argument('--livecd', action='store_true')
+    parser.add_argument('--disable', action='append', default=[])
     return parser
 
 
@@ -25,7 +26,8 @@ def main():
         if len(mode) == 0:
             mode = ['user', 'root']
         load_config(args.fnm, mode,
-                    livecd=args.livecd)
+                    livecd=args.livecd,
+                    disable=args.disable)
     else:
         raise Exception('Please enter a valid mode')
 
