@@ -53,7 +53,7 @@ if [ -d "$xinitdir" ]; then
 fi
 
 # Make sure dbus is available then set gsettings
-export DISPLAY=:0
+# export DISPLAY=:0
 
 if [ -e ~/.firstrun.ran ]
 then
